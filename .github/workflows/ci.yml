@@ -5,6 +5,7 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -14,15 +15,19 @@ jobs:
         with:
           python-version: '3.9'
 
-      - name: Install venv dependencies
+      - name: Install python3-venv
         run: |
           sudo apt update
-          sudo apt install python3-venv
+          sudo apt install -y python3-venv
 
-      - name: Install Dependencies and run tests
+      - name: Set up venv and install dependencies
         run: |
           python3 -m venv venv
-          source venv/bin/activate
-          pip install -r requirements.txt
-          source venv/bin/activate
-          pytest
+          ./venv/bin/python -m ensurepip --upgrade
+          ./venv/bin/pip install --upgrade pip
+          ./venv/bin/pip install -r requirements.txt
+
+      - name: Run Tests
+        run: |
+          ./venv/bin/python -m pytest
+
